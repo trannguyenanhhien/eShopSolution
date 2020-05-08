@@ -1,4 +1,5 @@
 ﻿using eShopSolution.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -34,13 +35,13 @@ namespace eShopSolution.Data.Extentions
             modelBuilder.Entity<Category>().HasData(
                 new Category()
                 {
-                    Id=1,
+                    Id = 1,
                     IsShowOnHome = true, ParentId = null, SortOrder = 1,
                     Status = Enums.Status.Active,
                 },
                 new Category()
                 {
-                    Id=2,
+                    Id = 2,
                     IsShowOnHome = true,
                     ParentId = null,
                     SortOrder = 2,
@@ -53,7 +54,7 @@ namespace eShopSolution.Data.Extentions
                             SeoDescription="The shirt products for men",SeoTitle="The shirt products for men"},
                     new CategoryTranslation()
                     {
-                        Id=3,
+                        Id = 3,
                         CategoryId=2,
                         Name = "Áo nữ",
                         LanguageId = "vi-VN",
@@ -113,6 +114,42 @@ namespace eShopSolution.Data.Extentions
             modelBuilder.Entity<ProductInCategory>().HasData(
                 new ProductInCategory() { ProductId = 1, CategoryId = 1 }
                 );
+
+            // any guid
+            var roleID = new Guid("56D3CF0C-0D11-4E42-B250-AD807DD2AB64");
+            var adminID = new Guid("AD65D59D-27AB-4F24-8805-9559C964527D");
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = roleID,
+                Name = "admin",
+                NormalizedName = "admin",
+                Description = "Adminstrator role"
+            });
+
+            var hasher = new PasswordHasher<AppUser>();
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = adminID,
+                UserName = "admin",
+                NormalizedUserName = "admin",
+                Email = "trannguyenanhhien@gmail.com",
+                NormalizedEmail = "trannguyenanhhien@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "05923564a"),
+                SecurityStamp = string.Empty,
+                FirstName = "Hien",
+                LastName = "Tran Nguyen Anh",
+                Dob = new DateTime(2020, 02, 05)
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = roleID,
+                UserId = adminID
+            }); 
         }
+
+        
+
     }
 }
